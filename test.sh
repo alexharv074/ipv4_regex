@@ -15,6 +15,8 @@ testBREnawk() {
 testERE() {
   grep -E -q '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' <<< '10.0.0.10'
   assertTrue "$?"
+  grep -E -q '^[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+$' <<< '10.0.0.10'
+  assertTrue "$?"
   gsed -E '/^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/Q1' <<< '10.0.0.10'
   assertFalse "$?"
 }
@@ -33,6 +35,8 @@ testPCRE() {
 
 testPCREshorter() {
   perl -ne '/^(\d+(\.|$)){4}/ and exit 1' <<< '10.0.0.10'
+  assertFalse "$?"
+  perl -ne '/(\d+(\.|\b)){4}/ and exit 1' <<< '10.0.0.10'
   assertFalse "$?"
 }
 
